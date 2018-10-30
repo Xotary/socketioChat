@@ -12,7 +12,6 @@ var port = process.env.PORT || 3005,
     io = require("socket.io")(server),
     users = {}, socks = {};
     var path = require('path');
-var users = {};
 
 
 server.listen(port, function () {
@@ -32,36 +31,37 @@ io.on('connection', function (socket) {
     socket.on("join", function (username) {
        
         socket.username = username;
-        users[socket.username] = socket;
+        users[socket.username] = {'socket':socket};
         
-        socket.emit('update messages', 'SERVER', 'you have connected');
-        socket.broadcast.emit('update messages', 'SERVER', username + ' has connected');
+        socket.emit('update messages', 'SERVER', 'you have connected at ', getCurrentDate());
+        socket.broadcast.emit('update messages', 'SERVER', getCurrentDate(), username + ' has connected at ' );
         io.sockets.emit('updateusers', Object.keys(users));
  
     });
 
-    socket.on('sendchat', function (data) {
+    socket.on('sendChat', function (data) {
 		// we tell the client to execute 'updatechat' with 2 parameters
-		io.sockets.emit('update messages', socket.username, data);
+		io.sockets.emit('update messages', socket.username, data, getCurrentDate());
 	});
+    
+    socket.on('send direct message', function(userName, msg, from){
+        socket.emit('sefl update message', msg);
+        socket.broadcast.to(users[userName].socket.id).emit('update direct chat', msg, from);
+    });
 
-    socket.on('user_typing', function (recv) {
-		var id = socks[recv.user].socket.id;
+    socket.on('user_typing', function (username) {
+		var id = users[username].socket.id;
         io.sockets.connected[id].emit('chat', JSON.stringify({'action': 'user_typing', 'data': users[socket.user]}));
     });
-    
-    socket.on('message', function (recv, fn) {
+
+/*     socket.on('message', function (recv, fn) {
 		var d = new Date();
 		var id = socks[recv.user].socket.id;
 		var msg = {'msg': recv.msg, 'user': users[socket.user]};
 		if (typeof fn !== 'undefined')
 			fn(JSON.stringify( {'ack': 'true', 'date': d} ));
 		io.sockets.connected[id].emit('chat', JSON.stringify( {'action': 'message', 'data': msg, 'date': d} ));
-	});
-    
-    socket.on('say to someone', function(id, msg){
-        socket.broadcast.to(id).emit('my message', msg);
-      });
+	}); */
 
     socket.on('disconnect', function(){
 		// remove the username from global users list
@@ -69,7 +69,7 @@ io.on('connection', function (socket) {
 		// update list of users in chat, client-side
 		io.sockets.emit('updateusers', Object.keys(users));
 		// echo globally that this client has left
-		socket.broadcast.emit('update messages', 'SERVER', socket.username + ' has disconnected');
+		socket.broadcast.emit('update messages', 'SERVER', socket.username + ' has disconnected at', getCurrentDate());
 	});
 });
 

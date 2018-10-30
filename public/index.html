@@ -2,6 +2,7 @@
 <html>
 
 <head>
+
     <style>
         html,
         body,
@@ -26,7 +27,6 @@
             padding: 5px 5px 5px 0px;
             width: 79%;
         }
-
         form input[type='submit'] {
             background: #eb5424;
             border: none;
@@ -35,10 +35,10 @@
             cursor: pointer;
             font-weight: bold;
             padding: 7px 5px;
-            width: 19%;
+            width: 20%;
             margin-top: 10px
         }
-
+        
         #history {
             float: left;
             background: #FFF;
@@ -46,7 +46,12 @@
             height: 550px;
             width: 79%;
         }
-
+        #directhistory {
+            background: #FFF;
+            border: 2px solid #eb5424;
+            height: 150px;
+            width: 100%;
+        }
         #userlistarea {
             float: right;
             background: #FFF;
@@ -64,14 +69,37 @@
             margin: 15px 0px;
             cursor: pointer
         }
+        
 
     </style>
     <title>Socket.IO chat</title>
-    <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
-    <script src="//code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="../socket.io-1.2.0.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css" />
+
+
 </head>
 
 <body>
+
+    <div id="dialog-form"> <!--Title установить при клике-->                            
+        <div>
+                <section id="directhistory">
+                    <ul class="messages" id="directchatarea">
+                        
+                    </ul>
+                </section>
+        </div>
+        <form id="directchat" autocomplete="off">
+            <fieldset>                
+                <input type="text" name="dmsg_text" id="dmsg_text">    
+                <!-- Allow form submission with keyboard without duplicating the dialog button -->
+                <input type="submit" tabindex="-1" value="Send">
+            </fieldset>
+        </form>
+    </div>
+
     <div style="scroll-behavior: auto">
         <section id="history">
             <ul class="messages" id="chatarea">
@@ -84,12 +112,11 @@
             </ul>
         </section>       
     </div>
-    
+
     <form autocomplete="off" id="chat">
         <input type="text" id="msg_text" name="msg_text" />
         <input type="submit" value="Send!" />
     </form>
-    <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <script type="text/javascript" src="/socket.io/socket.io.js"></script>
     <script type="text/javascript" src="main.js">  </script>
 </body>

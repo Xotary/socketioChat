@@ -50,37 +50,8 @@ $(function () {
     var curUser = decodeURI(window.location.search.replace('?name=', ""));
     socket.emit('join', curUser);
     socket.emit('load usergropus', curUser);
-    /*     $("#join").click(function () {  
-            $("#main-form").attr("hidden",false);
-            $("#join").attr("hidden",true);
-    
-            //socket.connect();
-            socket.emit('join', curUser);
-        }); */
-    /*     $.each($('#group-user-container li'), function () {
-            if ($(this).id == 'all') {
-                $(this).click(function () {
-                    $("#chatarea").text('');
-                    $('#sendmessageto').val("");
-                    socket.emit('retrive history');
-                    $('#search').val('');
-                    $.each($('#userlist li'), function () { $(this).show(); });
-                });
-            } else {
-                $(this).click(function () {
-                    if ($('#sendmessageto').val() != this.innerText) {
-                        $('#sendmessageto').val(this.innerText);
-                        $("#chatarea").text('');
-                        //$(this).removeClass('newmessage');
-                        socket.emit("retrive group history", this.innerText); //.replace(' (online)', '').replace(' (offline)', '')
-                        $("#msg_text").focus();
-                    }
-                });
-            }
-        }); */
 
     $("#all").click(function () { //renamed to Global
-        //if($('#sendmessageto').val()){
         $("#chatarea").text('');
         $('#sendmessageto').val("");
         socket.emit('retrive history');
@@ -88,8 +59,7 @@ $(function () {
         $('li#user_' + oldGroup.replace(idPattern, '_')).remove();
         $('#search').val('');
         $.each($('#userlist li'), function () { $(this).show(); });
-        groupMsg = 0;
-        //}        
+        groupMsg = 0;     
     }).css('cursor', 'pointer');
 
     function addRoom() {
@@ -144,8 +114,6 @@ $(function () {
                     $('#userlist').prepend(_this);
                 }
             });
-            /* form[0].reset();
-            allFields.removeClass("ui-state-error"); */
         }
     });
 
@@ -183,32 +151,6 @@ $(function () {
         return Math.random() * (max - min) + min;
     }
 
-    /*  $(window).on("message", function(e) {
-         
-         console.log('recived');
-         var data = e.originalEvent.data;
-    
-         if (data) {   
-           if (data.name) {
-             curUser = data.name;
-           } else {
-             curUser = getRandomArbitrary(1, 100).round(2)
-           } 
-           socket.emit('join', curUser);
-         }
-       }); */
-
-    //curUser = getRandomArbitrary(1, 100).round(2);
-    /*     socket.on('connect', function () {
-            if (curUser) {
-                socket.emit('join', curUser);
-                console.log('connected ' + curUser);
-            } /* else {
-                socket.emit('disconnect');
-                console.log('not authorised')
-            } 
-        }); */
-
     $('#userlist').sortable({
         connectWith: '#group-user-container,#add-to-group-container'
     });
@@ -234,7 +176,6 @@ $(function () {
         $('#sendmessageto').val('');
         $("#chatarea").text('');
         socket.emit('retrive history');
-        //$("#msg_text").focus();
         groupMsg = 0;
     });
 
@@ -269,7 +210,6 @@ $(function () {
                 addDialog
                     .data('groupName', data.groupName)
                     .dialog("open");
-            //$('li#gr_el_' + data.groupName.replace(idPattern, '_')).append('<p style="display: block;"></p>');
             });
         } else {
             $('li#gr_el_' + data.groupName.replace(idPattern, '_')).
@@ -283,23 +223,6 @@ $(function () {
         }
         $('li#gr_el_' + data.groupName.replace(idPattern, '_')).append('<ul style="float: left; display:grid; padding: 0px; margin: 5px 0px 5px 20px" id=users_in_group_' + data.groupName.replace(idPattern, '_') + '></ul>');
 
-        //Try drag&drop user add later
-        /* 
-        $('ul#users_in_group_'+data.groupName.replace(idPattern, '_')).sortable();
-        
-        $('ul#users_in_group_'+data.groupName.replace(idPattern, '_')).droppable({
-            drop: function (){
-                socket.emit('add new user to group', {userToAdd: })                
-            }
-        }); 
-        
-        $('#userlist li').draggable({
-            connectToSortable: 'ul#users_in_group_'+data.groupName.replace(idPattern, '_'),
-            helper: 'clone',
-
-        });
-        */
-
         $('div#gr_' + data.groupName.replace(idPattern, '_')).click(function () {
             if ($('#sendmessageto').val() != this.innerText) {
                 var oldGroup = localStorage.getItem('old group');
@@ -308,13 +231,13 @@ $(function () {
                 localStorage.setItem('old group', $('#sendmessageto').val());
 
                 $("#chatarea").text('');
-                $(this).removeClass('newmessage'); //$($(this).context.parentNode).removeClass('newmessage');
+                $(this).removeClass('newmessage');
                 if (oldGroup) {
                     $('li#user_' + oldGroup.replace(idPattern, '_')).remove();
                 }
                 socket.emit('load users of current group', $('#sendmessageto').val(), curUser);
 
-                socket.emit("retrive group history", this.innerText); //.replace(' (online)', '').replace(' (offline)', '')
+                socket.emit("retrive group history", this.innerText);
                 $("#msg_text").focus();
                 groupMsg = 1;
 
@@ -364,19 +287,7 @@ $(function () {
             $('img#user_' + data.userName.replace(idPattern, '_')).click(function () {
                 socket.emit('kick from group', { groupName: $('#sendmessageto').val(), userName: data.userName });
             });
-        }
-        /* else if(element == curUser){
-                   $('li#user_'+$('#sendmessageto').val().replace(idPattern, '_'))
-                   .append('<img id=user_'+element.replace(idPattern, '_')+
-                       ' src="assets/leave-group.png" alt="Leave this group" title="Выйти из группы" style="cursor:pointer; height:16px; width:16px; margin:5px 5px 5px 15px; float: left;>');
-                   $('img#user_'+element.replace(idPattern, '_')).click(function () {
-                       socket.emit('kick from group',{groupName: $('#sendmessageto').val().replace(idPattern, '_'), userName: element});
-                   });
-               } */
-
-        /* data.usersInGroup.forEach(element => {
-            $('ul#users_in_group_'+data.groupName.replace(idPattern, '_')).append('<li id=user_'+data.groupName.replace(idPattern, '_')+'>'+element+'</li>')
-        }); */
+        }    
     }
 
     socket.on('updateuser', function (user) {
@@ -390,34 +301,13 @@ $(function () {
             $('li#' + user.username.replace(idPattern, '_'))
                 .addClass('offline')
                 .removeClass('online');
-        }
-
-
-        /*      $('#userlist').empty();
-        $.each(data, function (key, value) {
-            addUser = $("<listyle='display: block;'>" + value + "</li>");
-            addUser.attr("id",value.replace(/\s/g,'').replace(".",""));
-            addUser.click(function () {                             
-                if($('#sendmessageto').val()!=this.innerText){
-                    $('#sendmessageto').val(this.innerText);
-                    $("#chatarea").text('');
-                    $(this).css('background','white');
-                    socket.emit("retrive private history", this.innerText, curUser)
-                }                                
-                if($('#sendmessageto').val()==curUser){
-                    $('#sendmessageto').val('');
-                    $("#chatarea").text('');
-                    socket.emit('retrive history');
-                }
-            });
-            $('#userlist').append(addUser);
-        }); */
+        }        
     });
 
     socket.on('load userlist', function (data) {
         $('#userlist').empty();
         for (var key in data) {
-            addUser = $("<li>" + data[key].username + "("+data[key].positionName +")</li>"); //+ ' (' + data[key].status не отоброжать статусы рядом с пользователем //style='display: block;'
+            addUser = $("<li>" + data[key].username + "("+data[key].positionName +")</li>");
             addUser.attr("id", data[key].username.replace(idPattern, '_'));
             if (data[key].status == 'online') {
                 addUser.addClass('online');
@@ -437,11 +327,11 @@ $(function () {
                     $('#sendmessageto').val(this.innerText.split('(')[0]);
                     $("#chatarea").text('');
                     $(this).removeClass('newmessage');
-                    socket.emit("retrive private history", $('#sendmessageto').val(), curUser); //.replace(' (online)', '').replace(' (offline)', '')
+                    socket.emit("retrive private history", $('#sendmessageto').val(), curUser);
                     $("#msg_text").focus();
                     groupMsg = 0;
                 }
-                if (this.innerText == curUser) { //replace(' (online)')
+                if (this.innerText == curUser) {
                     $('#sendmessageto').val('');
                     $("#chatarea").text('');
                     socket.emit('retrive history');
@@ -453,13 +343,6 @@ $(function () {
         }
     });
 
-    /* function sendDirectMessage(to, from) {
-        mess = $("#dmsg_text").val();
-        socket.emit("send direct message", to, safe(mess), from);
-        $("#dmsg_text").val("");
-        $("#dmsg_text").focus();
-    }
- */
     socket.on("connected", function (serv, msg, date) {
         if (!$('#sendmessageto').val()) {
             finalMessage = $("<li><b>" + serv + "</b> " + msg + ": " + date + "</li>");
@@ -470,7 +353,7 @@ $(function () {
 
     socket.on('update direct message', function (data) {
         var selector = '#' + data.sendingUserName.replace(idPattern, '_');
-        if ($('#sendmessageto').val() != data.sendingUserName) { //.replace(' (online)', '').replace(' (offline)')
+        if ($('#sendmessageto').val() != data.sendingUserName) {
             $(selector).addClass('newmessage');
             sendNotification('Сообщение от ' + data.sendingUserName, { body: data.message });
         }
@@ -481,7 +364,7 @@ $(function () {
 
     socket.on('update group message', function (data) {
         var selector = '#gr_' + data.receivingUserName.replace(idPattern, '_');
-        if ($('#sendmessageto').val() != data.receivingUserName) { //.replace(' (online)', '').replace(' (offline)')
+        if ($('#sendmessageto').val() != data.receivingUserName) {
             $(selector).addClass('newmessage');
             sendNotification('Сообщение в группе ' + data.receivingUserName, { body: data.message });
         }
@@ -499,7 +382,7 @@ $(function () {
     });
 
     socket.on('self update message', function (data) {
-        finalMessage = $("<li><b>" + data.sendingUserName + "</b> в " + data.timeMsg + ": " + data.message + "</li>"); //style='display: block;' 
+        finalMessage = $("<li><b>" + data.sendingUserName + "</b> в " + data.timeMsg + ": " + data.message + "</li>");
         $("#chatarea").append(finalMessage);
         $('#chatarea').scrollTop("99999");
     });
@@ -507,7 +390,7 @@ $(function () {
     $("form#chat").submit(function (e) {
         e.preventDefault();
         mess = $("#msg_text").val();
-        messTo = $("#sendmessageto").val(); //.replace(' (offline)', '').replace(' (online)', '')
+        messTo = $("#sendmessageto").val();
         if (!groupMsg) {
             socket.emit("send message", safe(mess), messTo, curUser);
         } else {

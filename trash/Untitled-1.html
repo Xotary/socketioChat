@@ -1,0 +1,68 @@
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Page Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta>
+    <meta>
+    <meta>
+    <meta>
+</head>
+
+<body style="overflow-wrap: break-word;">
+
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script>
+        $(function () {
+            $('body').append("<iframe  width='1800' height='650' src='http://192.168.0.76:3005?name=" + encodeURI(window.top.$('iframe')[0].contentWindow.Xrm.Page.context.getUserName()) + "'></iframe>");
+
+
+            /*  setTimeout(() => {
+                 iframe = window.top.$('iframe').contents().find('iframe')[0];
+                 var obj = {
+                     name: window.top.$('iframe')[0].contentWindow.Xrm.Page.context.getUserName()
+                 }
+                 iframe.contentWindow.postMessage(obj, '*');
+             }, 3000); */
+
+            /*       pathname = location.pathname;
+                  myDomain = pathname.substring(0, pathname.lastIndexOf('/')) + '/';
+                  // Установка параметра expire на год вперед.
+                  var largeExpDate = new Date();
+                  largeExpDate.setTime(largeExpDate.getTime() + (365 * 24 * 3600 * 1000));
+                  setCookie('username', window.top.Xrm.Page.context.getUserName(), largeExpDate, myDomain) */
+            /* if (data) {
+              console.log("can't get name");
+       
+              if (data.name) {
+                curUser = data.name;
+              }
+            // $('#message').text(str);
+            } */
+        });
+
+/*         function setCookie(name, value) {
+            var argv = setCookie.arguments;
+            var argc = setCookie.arguments.length;
+            var expires = (argc > 2) ? argv[2] : null;
+            var path = (argc > 3) ? argv[3] : null;
+            var domain = (argc > 4) ? argv[4] : null;
+            var secure = (argc > 5) ? argv[5] : false;
+            document.cookie = name + "=" + escape(value) +
+                ((expires == null) ? "" : ("; expires=" +
+                    expires.toGMTString())) +
+                ((path == null) ? "" : ("; path=" + path)) +
+                ((domain == null) ? "" : ("; domain=" + domain)) +
+                ((secure == true) ? "; secure" : "");
+        } */
+
+
+    </script>
+
+
+
+</body>
+
+</html>

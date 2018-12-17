@@ -21,10 +21,12 @@
             margin: 15px 0;
         }
 
-        form input[type='text'] {
+        input[type='text']{
             border: 2px solid #eb5424;
             border-radius: 5px;
             padding: 5px 5px 5px 0px;
+        }
+        form input[type='text'] {            
             width: 68%;
         }
         form input[type='submit'] {
@@ -38,13 +40,27 @@
             width: 15%;
             margin-top: 10px
         }
-        
+        input[type='button']{
+            background: #eb5424;
+            border: none;
+            border-radius: 5px;
+            color: #FFF;
+            cursor: pointer;
+            font-weight: bold;
+            padding: 7px 5px;
+        }        
+        #search {
+            border: 2px solid #eb5424;
+            border-radius: 5px;
+            width: 80%;
+            padding: 5px 5px 5px 5px;            
+        }
         #history {
             float: left;
             background: #FFF;
             border: 2px solid #eb5424;
             height: 550px;
-            width: 79%;
+            width: 61%;
         }
         #directhistory {
             background: #FFF;
@@ -53,74 +69,110 @@
             width: 100%;
         }
         #userlistarea {
-            float: right;
+            float: left;
             background: #FFF;
             border: 2px solid #eb5424;
             height: 550px;
-            width: 20%;
+            width: 18%;
+            overflow-y: scroll;
+            margin-left: 5px;
+        }
+        #roomarea{
+            float: left;
+            height: 550px;
+            width: 19%;
+            overflow-y: scroll;
+            background: #FFF;
+            border: 2px solid #eb5424;
+            margin-left: 5px;
         }
         .messages {
             height: 100%;
             margin: 0;
             overflow-y: scroll;
-            padding: 0px 20px 0px 20px;
+            padding: 0px 20px 0px 20px;            
         }
-        ul#userlist li{
-            margin: 15px 0px;
-            cursor: pointer
+        .messages li{
+            display: block;
+        }
+        #roomlist li{
+            margin: 15px 0px;            
+            /* display: block; */
+            height: 20px;
+        }
+        #userlist li{
+            margin: 15px 0px;  
+            cursor: pointer;   
+            /* display: block; */ 
+        }
+        ul{
+            list-style-type: none;    
+        }
+        ul#roomlist li div{
+            /* display: block; */
+            float: left;
+            cursor: pointer;
+            height: 16px;
+        }
+        .online {
+            color: rgb(0, 0, 0)
+        }
+        .offline {
+            color: rgb(163, 163, 163)
+        }
+        .newmessage {
+            background-color: #00ff22;       
         }
         
 
     </style>
     <title>Socket.IO chat</title>
-    <script src="../socket.io-1.2.0.js"></script>
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css" />
-
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" />
+    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+    <script type="text/javascript" src="main.js">  </script>
 
 </head>
 
-<body>
+<body id='mainbody'>
+    <div id="dialog-form" title="Create new group">    
+        <label for="groupname">Group name</label>
+        <input type="text" name="groupname" id="groupname" value="" class="text ui-widget-content ui-corner-all">
+        <div style=" height: 70%; overflow-y: auto; background: #FFF; border: 2px solid #eb5424; border-radius: 5px; margin: 10px 0" id="group-user-container"></div>
+    </div>
 
-    <div id="dialog-form"> <!--Title установить при клике-->                            
-        <div>
-                <section id="directhistory">
-                    <ul class="messages" id="directchatarea">
+    <div id="add-dialog-form" title="Add user in group">
+        <div style=" height: 80%; overflow-y: auto; background: #FFF; border: 2px solid #eb5424; border-radius: 5px; margin: 10px 0" id="add-to-group-container"></div>
+    </div>
 
-                    </ul>
-                </section>
+    <div id="main-form">
+        <div style="scroll-behavior: auto">
+            <section id="history">
+                <ul class="messages" id="chatarea">
+
+                </ul>
+            </section>
+            <section id="roomarea">
+                <ul id="roomlist">
+                    <li><input id="createroom" type="button" value="Create group"></li>
+                    <li id="all" value="all">Global</li>
+                </ul>
+            </section>
+            <section id="userlistarea">
+                <li id="searchElement" style="margin: 15px 0px 15px 40px; display: block;" ><input autocomplete="off" type="text" id="search"></li>                
+                <ul id="userlist">
+
+                </ul>
+            </section>
         </div>
-        <form id="directchat" autocomplete="off">
-            <fieldset>                
-                <input type="text" name="dmsg_text" id="dmsg_text">    
-                <!-- Allow form submission with keyboard without duplicating the dialog button -->
-                <input type="submit" tabindex="-1" value="Send">
-            </fieldset>
+
+        <form autocomplete="off" id="chat">
+            <input id="sendmessageto" style="width: 15%" type="text" disabled readonly />
+            <input type="text" id="msg_text" name="msg_text" />
+            <input type="submit" value="Send!" />
         </form>
     </div>
-
-    <div style="scroll-behavior: auto">
-        <section id="history">
-            <ul class="messages" id="chatarea">
-
-            </ul>
-        </section> 
-        <section id="userlistarea">
-                <li id="all" style="margin: 15px 0px 15px 40px; cursor: pointer; display: block;" value="all">All</li>
-            <ul id="userlist">
-
-            </ul>
-        </section>       
-    </div>
-
-    <form autocomplete="off" id="chat">
-        <input id="sendmessageto" style="width: 15%" type="text" disabled readonly/>
-        <input type="text" id="msg_text" name="msg_text" />
-        <input type="submit" value="Send!" />
-    </form>
-    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
-    <script type="text/javascript" src="main.js">  </script>
 </body>
 
 </html>
